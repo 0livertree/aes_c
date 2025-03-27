@@ -1,4 +1,6 @@
 main
+main.exe
 *.o
 *.so
 Assignment 2.docx
+.vscode/tasks.json
