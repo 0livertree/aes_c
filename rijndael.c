@@ -52,6 +52,9 @@ char inv_sbox[16][16] = {
  * Operations used when encrypting a block
  */
 void sub_bytes(unsigned char *block) {
+  // First digit of hexadecimal value of block goes to the row index of sbox
+  // Second digit to the column index of sbox
+  // replace block value with corresponding sbox value
   for (int i = 0; i < 4; ++i) {
     for (int j = 0; j < 4; ++j) {
       block[i * 4 + j] = sbox[block[i * 4 + j] / 16][block[i * 4 + j] % 16];
