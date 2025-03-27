@@ -95,7 +95,19 @@ void invert_sub_bytes(unsigned char *block) {
 }
 
 void invert_shift_rows(unsigned char *block) {
-  // TODO: Implement me!
+  for (int i = 1; i < 4; ++i) {
+    unsigned char *temp = malloc(sizeof(unsigned char) * (4 - i));
+    memcpy(temp, block + (i * 4), sizeof(unsigned char) * (4 - i));
+    size_t count = 0;
+    for (int j = 0; j < 4; ++j) {
+      if (j < i) {
+        block[i * 4 + j] = block[i * 4 + j + (4 - i)];
+      } else {
+        block[i * 4 + j] = temp[count++];
+      }
+    }
+    free(temp);
+  }
 }
 
 void invert_mix_columns(unsigned char *block) {
