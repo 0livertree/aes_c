@@ -1,4 +1,5 @@
 /*
+ * ilpyo hong, D24130377
  * TODO: Add your name and student number here, along with
  *       a brief description of this code.
  */
@@ -8,7 +9,8 @@
 
 #define BLOCK_ACCESS(block, row, col) (block[(row * 4) + col])
 #define BLOCK_SIZE 16
-
+extern char sbox[16][16];
+extern char inv_sbox[16][16];
 /*
  * These should be the main encrypt/decrypt functions (i.e. the main
  * entry point to the library for programmes hoping to use it to

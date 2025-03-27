@@ -1,10 +1,11 @@
 /*
-* ilpyo hong, D24130377, 
+ * ilpyo hong, D24130377,
  * TODO: Add your name and student number here, along with
  *       a brief description of this code.
  */
 
 #include <stdlib.h>
+#include <string.h>
 // TODO: Any other files you need to include should go here
 
 #include "rijndael.h"
@@ -59,7 +60,19 @@ void sub_bytes(unsigned char *block) {
 }
 
 void shift_rows(unsigned char *block) {
-  // TODO: Implement me!
+  for (int i = 1; i < 4; ++i) {
+    unsigned char *temp = malloc(sizeof(unsigned char) * i);
+    memcpy(temp, block + (i * 4), sizeof(unsigned char) * i);
+    size_t count = 0;
+    for (int j = 0; j < 4; ++j) {
+      if (j < 4 - i) {
+        block[i * 4 + j] = block[i * 4 + j + i];
+      } else {
+        block[i * 4 + j] = temp[count++];
+      }
+    }
+    free(temp);
+  }
 }
 
 void mix_columns(unsigned char *block) {
