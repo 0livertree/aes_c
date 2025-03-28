@@ -167,9 +167,7 @@ void add_round_key(unsigned char *block, unsigned char *round_key) {
     int i, j;
     // make 176 bytes key
     unsigned char *result = malloc(sizeof(unsigned char) * 176);
-    if (result == NULL) {
-        return NULL;
-    }
+
     
     memcpy(result, cipher_key, 16);
 
@@ -213,16 +211,48 @@ void add_round_key(unsigned char *block, unsigned char *round_key) {
    */
   unsigned char *aes_encrypt_block(unsigned char *plaintext,
                                    unsigned char *key) {
-    // TODO: Implement me!
     unsigned char *output =
         (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
+    memcpy(output, plaintext, sizeof(unsigned char) * BLOCK_SIZE);
+
+    unsigned char *expanded_key = expand_key(key);
+    
+    add_round_key(output, expanded_key);
+    for (int i = 1; i < 10; ++i) {
+      sub_bytes(output);
+      shift_rows(output);
+      mix_columns(output);
+      add_round_key(output, expanded_key + i * 16);
+    }
+
+    sub_bytes(output);
+    shift_rows(output);
+    add_round_key(output, expanded_key + 10 * 16);
+
+    free(expanded_key);
     return output;
   }
 
   unsigned char *aes_decrypt_block(unsigned char *ciphertext,
                                    unsigned char *key) {
-    // TODO: Implement me!
     unsigned char *output =
         (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
+    memcpy(output, ciphertext, sizeof(unsigned char) * BLOCK_SIZE);
+    unsigned char *expanded_key = expand_key(key);
+
+    add_round_key(output, expanded_key + 10 * 16);
+    invert_shift_rows(output);
+    invert_sub_bytes(output);
+
+    for (int i = 9; i > 0; --i) {
+      add_round_key(output, expanded_key + i * 16);
+      invert_mix_columns(output);
+      invert_shift_rows(output);
+      invert_sub_bytes(output);
+    }
+    
+    add_round_key(output, expanded_key);
+
+    free(expanded_key);
     return output;
   }
