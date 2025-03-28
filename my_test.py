@@ -205,6 +205,7 @@ class TestAESFunctions(unittest.TestCase):
 
             self.assertEqual(int_matrix, c_result, f"key : {key} -> c_result : {c_result} -> py_result : {int_matrix} key_matrices mismatch between C and Python")
 
+class FullAEStest(unittest.TestCase):
     def test_encryption_single_block(self):
         for _ in range(3):
             key = random_block()
@@ -231,11 +232,10 @@ class TestAESFunctions(unittest.TestCase):
 
             key_array = to_c_block(key)
             ciphertext_array = to_c_block(ciphertext)
-            c_plaintext = lib.aes_encrypt_block(ciphertext_array, key_array)
-            c_cipher_byte = bytes(c_plaintext[i] for i in range(16))
+            c_plaintext = lib.aes_decrypt_block(ciphertext_array, key_array)
+            c_plain_byte = bytes(c_plaintext[i] for i in range(16))
 
-            self.assertEqual(python_plaintext, c_cipher_byte, f"key : {key} -> c_result : {c_cipher_byte} -> py_result : {python_plaintext} decryption mismatch between C and Python")
-
+            self.assertEqual(python_plaintext, c_plain_byte, f"key : {key} -> c_result : {c_plain_byte} -> py_result : {python_plaintext} decryption mismatch between C and Python")
 
 
 
