@@ -4,6 +4,7 @@
  *       a brief description of this code.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 // TODO: Any other files you need to include should go here
@@ -66,7 +67,7 @@ void shift_rows(unsigned char *block) {
   for (int i = 1; i < 4; ++i) {
     unsigned char temp[4];
 
-    //shift up-side because python code column-major 
+    // shift up-side because python code column-major
     for (int j = 0; j < 4; ++j) {
       temp[j] = block[((j + i) % 4) * 4 + i];
     }
@@ -95,17 +96,16 @@ void invert_sub_bytes(unsigned char *block) {
 
 void invert_shift_rows(unsigned char *block) {
   for (int i = 1; i < 4; ++i) {
-    unsigned char *temp = malloc(sizeof(unsigned char) * (4 - i));
-    memcpy(temp, block + (i * 4), sizeof(unsigned char) * (4 - i));
-    size_t count = 0;
+    unsigned char temp[4];
+
+    // shift up-side because python code column-major
     for (int j = 0; j < 4; ++j) {
-      if (j < i) {
-        block[i * 4 + j] = block[i * 4 + j + (4 - i)];
-      } else {
-        block[i * 4 + j] = temp[count++];
-      }
+      temp[j] = block[((j + 4 - i) % 4) * 4 + i];
     }
-    free(temp);
+
+    for (int j = 0; j < 4; ++j) {
+      block[j * 4 + i] = temp[j];
+    }
   }
 }
 
