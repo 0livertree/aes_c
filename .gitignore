@@ -4,3 +4,4 @@ main.exe
 *.so
 Assignment 2.docx
 .vscode/tasks.json
+*.dll

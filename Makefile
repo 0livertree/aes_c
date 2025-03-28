@@ -10,10 +10,10 @@ main: rijndael.o main.c
 	$(CC) -o main main.c rijndael.o
 
 rijndael.o: rijndael.c rijndael.h
-	$(CC) -o rijndael.o -fPIC -c rijndael.c
+	$(CC) -o rijndael.o -c rijndael.c
 
 rijndael.dll: rijndael.o
-	$(CC) -shared -o rijndael.dll -fPIC rijndael.c
+	$(CC) -shared -o rijndael.dll rijndael.c
 clean:
 	del -f *.o *.so
 	del -f main
