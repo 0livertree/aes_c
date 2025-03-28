@@ -164,7 +164,7 @@ class TestAESFunctions(unittest.TestCase):
 
             # C function
             c_block = to_c_block(block)
-            lib.mix_coluimns(c_block)
+            lib.mix_columns(c_block)
             c_result = bytes(c_block)
             c_result_matrix = bytes2matrix(c_result)
 
