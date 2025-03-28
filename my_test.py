@@ -205,6 +205,38 @@ class TestAESFunctions(unittest.TestCase):
 
             self.assertEqual(int_matrix, c_result, f"key : {key} -> c_result : {c_result} -> py_result : {int_matrix} key_matrices mismatch between C and Python")
 
+    def test_encryption_single_block(self):
+        for _ in range(3):
+            key = random_block()
+            aes = AES(key)
+            plaintext = random_block()
+
+            python_ciphertext = aes.encrypt_block(plaintext)
+
+            key_array = to_c_block(key)
+            plaintext_array = to_c_block(plaintext)
+            c_ciphertext = lib.aes_encrypt_block(plaintext_array, key_array)
+            c_cipher_byte = bytes(c_ciphertext[i] for i in range(16))
+
+            self.assertEqual(python_ciphertext, c_cipher_byte, f"key : {key} -> c_result : {c_cipher_byte} -> py_result : {python_ciphertext} encryption mismatch between C and Python")
+
+
+    def test_decryption_single_block(self):
+        for _ in range(3):
+            key = random_block()
+            aes = AES(key)
+            ciphertext = random_block()
+
+            python_plaintext = aes.decrypt_block(ciphertext)
+
+            key_array = to_c_block(key)
+            ciphertext_array = to_c_block(ciphertext)
+            c_plaintext = lib.aes_encrypt_block(ciphertext_array, key_array)
+            c_cipher_byte = bytes(c_plaintext[i] for i in range(16))
+
+            self.assertEqual(python_plaintext, c_cipher_byte, f"key : {key} -> c_result : {c_cipher_byte} -> py_result : {python_plaintext} decryption mismatch between C and Python")
+
+
 
 
 if __name__ == '__main__':
