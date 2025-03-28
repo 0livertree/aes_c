@@ -6,7 +6,7 @@ import copy
 import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "./external/python-aes"))
-from aes import sub_bytes, shift_rows, mix_columns, bytes2matrix, matrix2bytes, inv_sub_bytes, inv_shift_rows, inv_mix_columns, AES
+from aes import sub_bytes, shift_rows, mix_columns, bytes2matrix, matrix2bytes, inv_sub_bytes, inv_shift_rows, inv_mix_columns, AES, add_round_key
 
 
 if os.name == 'nt':
@@ -129,7 +129,28 @@ class TestAESFunctions(unittest.TestCase):
             c_result_matrix = bytes2matrix(c_result)
 
             self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} ShiftRows mismatch between C and Python")
+    
+    def test_add_round_key_equivalent(self):
+        for _ in range(3):
+            block = random_block()
+            key = random_block()
 
+            origin = bytes2matrix(block)
+            #Python function
+            matrix = bytes2matrix(block)
+            key_matrix = bytes2matrix(key)
+            add_round_key(matrix, key_matrix)
+            py_result = matrix2bytes(matrix)
 
+            # C function
+            c_block = to_c_block(block)
+            c_key = to_c_block(key)
+            lib.add_round_key(c_block, c_key)
+            c_result = bytes(c_block)
+            c_result_matrix = bytes2matrix(c_result)
+
+            self.assertEqual(py_result, c_result, f"original : {origin}, key : {key_matrix} -> c_result : {c_result_matrix} -> py_result : {py_result} add_round_key mismatch between C and Python")
+
+            
 if __name__ == '__main__':
     unittest.main()
