@@ -12,4 +12,4 @@ jobs:
           make
       - name: Test code
         run: |
-          python test.py
+          python my_test.py
