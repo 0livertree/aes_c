@@ -63,6 +63,7 @@ class TestAESFunctions(unittest.TestCase):
         for _ in range(3):
             block = random_block()
 
+            origin = bytes2matrix(block)
             # Python function
             matrix = bytes2matrix(block)
             sub_bytes(matrix)
@@ -74,12 +75,13 @@ class TestAESFunctions(unittest.TestCase):
             c_result = bytes(c_block)
             c_result_matrix = bytes2matrix(c_result)
 
-            self.assertEqual(py_result, c_result, f"original : {matrix} -> result : {c_result_matrix} SubBytes mismatch between C and Python")
+            self.assertEqual(py_result, c_result, f"original : {origin} -> result : {c_result_matrix} -> py_result : {matrix} SubBytes mismatch between C and Python")
 
     def test_shift_rows_equivalent(self):
         for _ in range(3):
             block = random_block()
             
+            origin = bytes2matrix(block)
             # Python function
             matrix = bytes2matrix(block)
             shift_rows(matrix)
@@ -92,7 +94,7 @@ class TestAESFunctions(unittest.TestCase):
             c_result_matrix = bytes2matrix(c_result)
 
 
-            self.assertEqual(py_result, c_result, f"original : {matrix} -> result : {c_result_matrix} ShiftRows mismatch between C and Python")
+            self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} ShiftRows mismatch between C and Python")
 
 if __name__ == '__main__':
     unittest.main()
