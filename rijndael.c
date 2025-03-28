@@ -64,17 +64,16 @@ void sub_bytes(unsigned char *block) {
 
 void shift_rows(unsigned char *block) {
   for (int i = 1; i < 4; ++i) {
-    unsigned char *temp = malloc(sizeof(unsigned char) * i);
-    memcpy(temp, block + (i * 4), sizeof(unsigned char) * i);
-    size_t count = 0;
+    unsigned char temp[4];
+
+    //shift up-side because python code column-major 
     for (int j = 0; j < 4; ++j) {
-      if (j < 4 - i) {
-        block[i * 4 + j] = block[i * 4 + j + i];
-      } else {
-        block[i * 4 + j] = temp[count++];
-      }
+      temp[j] = block[((j + i) % 4) * 4 + i];
     }
-    free(temp);
+
+    for (int j = 0; j < 4; ++j) {
+      block[j * 4 + i] = temp[j];
+    }
   }
 }
 
