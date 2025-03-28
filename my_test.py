@@ -6,8 +6,7 @@ import copy
 import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "./external/python-aes"))
-from aes import sub_bytes, shift_rows, mix_columns, bytes2matrix, matrix2bytes, inv_sub_bytes, inv_shift_rows,
-inv_mix_columns, AES
+from aes import sub_bytes, shift_rows, mix_columns, bytes2matrix, matrix2bytes, inv_sub_bytes, inv_shift_rows, inv_mix_columns, AES
 
 
 if os.name == 'nt':
