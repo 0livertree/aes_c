@@ -173,7 +173,7 @@ class TestAESFunctions(unittest.TestCase):
     def test_invert_mix_columns_equivalent(self):
         for _ in range(3):
             block = random_block()
-            block = b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f'
+
             
             origin = bytes2matrix(block)
             # Python function
@@ -192,11 +192,10 @@ class TestAESFunctions(unittest.TestCase):
     def test_expand_key_equivalend(self):
         for _ in range(3):
             key = random_block()
-
             # Python AES class init
 
             test_aes = AES(key)
-            
+            int_matrix = [[list(cell) if isinstance(cell, bytes) else cell for cell in row] for row in test_aes._key_matrices]
             # C function
             key_array = to_c_block(key)
             result_ptr = lib.expand_key(key_array)
@@ -204,7 +203,8 @@ class TestAESFunctions(unittest.TestCase):
 
             c_result = [[list(c_expanded_key_bytes[i + j:i + j + 4]) for j in range(0, 16, 4)] for i in range(0, 176, 16) ]
 
-            self.assertEqual(test_aes._key_matrices, c_result, f"key : {key} -> c_result : {c_result} -> py_result : {test_aes._key_matrices} key_matrices mismatch between C and Python")
+            self.assertEqual(int_matrix, c_result, f"key : {key} -> c_result : {c_result} -> py_result : {int_matrix} key_matrices mismatch between C and Python")
+
 
 
 if __name__ == '__main__':
