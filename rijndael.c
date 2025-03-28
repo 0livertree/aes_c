@@ -85,11 +85,28 @@ void mix_columns(unsigned char *block) {
  * Operations used when decrypting a block
  */
 void invert_sub_bytes(unsigned char *block) {
-  // TODO: Implement me!
+  // Use inv_sbox, same method of sub_bytes
+  for (int i = 0; i < 4; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      block[i * 4 + j] = inv_sbox[block[i * 4 + j] / 16][block[i * 4 + j] % 16];
+    }
+  }
 }
 
 void invert_shift_rows(unsigned char *block) {
-  // TODO: Implement me!
+  for (int i = 1; i < 4; ++i) {
+    unsigned char *temp = malloc(sizeof(unsigned char) * (4 - i));
+    memcpy(temp, block + (i * 4), sizeof(unsigned char) * (4 - i));
+    size_t count = 0;
+    for (int j = 0; j < 4; ++j) {
+      if (j < i) {
+        block[i * 4 + j] = block[i * 4 + j + (4 - i)];
+      } else {
+        block[i * 4 + j] = temp[count++];
+      }
+    }
+    free(temp);
+  }
 }
 
 void invert_mix_columns(unsigned char *block) {
@@ -100,7 +117,13 @@ void invert_mix_columns(unsigned char *block) {
  * This operation is shared between encryption and decryption
  */
 void add_round_key(unsigned char *block, unsigned char *round_key) {
-  // TODO: Implement me!
+  // key와 block의 각 열의 원소들을 xor연산하는거임
+  // xor operation each key, block element
+  for (int i = 0; i < 4; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      block[i * 4 + j] ^= round_key[i * 4 + j];
+    }
+  }
 }
 
 /*
