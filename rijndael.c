@@ -78,8 +78,25 @@ void shift_rows(unsigned char *block) {
   }
 }
 
+unsigned char xtime(unsigned char x) {
+  // x * 2 function with moduler
+  return (x << 1) ^ ((x & 0x80) ? 0x1b : 0x00);
+}
+
+void mix_single_column(unsigned char *r) {
+  unsigned char t = r[0] ^ r[1] ^ r[2] ^ r[3];
+  unsigned char u = r[0];
+
+  r[0] ^= t ^ xtime(r[0] ^ r[1]);
+  r[1] ^= t ^ xtime(r[1] ^ r[2]);
+  r[2] ^= t ^ xtime(r[2] ^ r[3]);
+  r[3] ^= t ^ xtime(r[3] ^ u);
+}
+
 void mix_columns(unsigned char *block) {
-  // TODO: Implement me!
+  for (int i = 0; i < 4; i++) {
+    mix_single_column(block + i * 4);
+  }
 }
 
 /*
@@ -110,7 +127,15 @@ void invert_shift_rows(unsigned char *block) {
 }
 
 void invert_mix_columns(unsigned char *block) {
-  // TODO: Implement me!
+  for (int i = 0; i < 4; ++i) {
+    unsigned char u = xtime(xtime(block[i * 4] ^ block[i * 4 + 2]));
+    unsigned char v = xtime(xtime(block[i * 4 + 1] ^ block[i * 4 + 3]));
+    block[i * 4] ^= u;
+    block[i * 4 + 1] ^= v;
+    block[i * 4 + 2] ^= u;
+    block[i * 4 + 3] ^= v;
+  }
+  mix_columns(block);
 }
 
 /*
@@ -126,31 +151,34 @@ void add_round_key(unsigned char *block, unsigned char *round_key) {
   }
 }
 
-/*
- * This function should expand the round key. Given an input,
- * which is a single 128-bit key, it should return a 176-byte
- * vector, containing the 11 round keys one after the other
- */
-unsigned char *expand_key(unsigned char *cipher_key) {
-  // TODO: Implement me!
-  return 0;
-}
+  /*
+   * This function should expand the round key. Given an input,
+   * which is a single 128-bit key, it should return a 176-byte
+   * vector, containing the 11 round keys one after the other
+   */
+  unsigned char *expand_key(unsigned char *cipher_key) {
+    unsigned char *result = malloc(sizeof(unsigned char) * 176);
+    memset(result, 0, sizeof(unsigned char) * 176);
 
-/*
- * The implementations of the functions declared in the
- * header file should go here
- */
-unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key) {
-  // TODO: Implement me!
-  unsigned char *output =
-      (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
-  return output;
-}
+    return result;
+  }
 
-unsigned char *aes_decrypt_block(unsigned char *ciphertext,
-                                 unsigned char *key) {
-  // TODO: Implement me!
-  unsigned char *output =
-      (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
-  return output;
-}
+  /*
+   * The implementations of the functions declared in the
+   * header file should go here
+   */
+  unsigned char *aes_encrypt_block(unsigned char *plaintext,
+                                   unsigned char *key) {
+    // TODO: Implement me!
+    unsigned char *output =
+        (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
+    return output;
+  }
+
+  unsigned char *aes_decrypt_block(unsigned char *ciphertext,
+                                   unsigned char *key) {
+    // TODO: Implement me!
+    unsigned char *output =
+        (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
+    return output;
+  }
