@@ -16,7 +16,7 @@ rijndael.dll: rijndael.o
 	$(CC) -shared -o rijndael.dll rijndael.c
 clean:
 	del -f *.o *.so
-	del -f main
+	del -f main.exe
 	del -f *.dll
 else
 all: main rijndael.so
