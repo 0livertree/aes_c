@@ -6,8 +6,8 @@ import copy
 import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "./external/python-aes"))
-from aes import sub_bytes, shift_rows, bytes2matrix, matrix2bytes
-
+from aes import sub_bytes, shift_rows, mix_columns, bytes2matrix, matrix2bytes, inv_sub_bytes, inv_shift_rows,
+inv_mix_columns, AES
 
 
 if os.name == 'nt':
@@ -93,8 +93,44 @@ class TestAESFunctions(unittest.TestCase):
             c_result = bytes(c_block)
             c_result_matrix = bytes2matrix(c_result)
 
+            self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} ShiftRows mismatch between C and Python")
+
+    def test_invert_shift_rows_equivalent(self):
+        for _ in range(3):
+            block = random_block()
+            
+            origin = bytes2matrix(block)
+            # Python function
+            matrix = bytes2matrix(block)
+            inv_shift_rows(matrix)
+            py_result = matrix2bytes(matrix)
+
+            # C function
+            c_block = to_c_block(block)
+            lib.invert_shift_rows(c_block)
+            c_result = bytes(c_block)
+            c_result_matrix = bytes2matrix(c_result)
+
+            self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} invert_ShiftRows mismatch between C and Python")
+
+    def test_invert_sub_bytes_equivalent(self):
+        for _ in range(3):
+            block = random_block()
+            
+            origin = bytes2matrix(block)
+            # Python function
+            matrix = bytes2matrix(block)
+            inv_sub_bytes(matrix)
+            py_result = matrix2bytes(matrix)
+
+            # C function
+            c_block = to_c_block(block)
+            lib.invert_sub_bytes(c_block)
+            c_result = bytes(c_block)
+            c_result_matrix = bytes2matrix(c_result)
 
             self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} ShiftRows mismatch between C and Python")
+
 
 if __name__ == '__main__':
     unittest.main()
