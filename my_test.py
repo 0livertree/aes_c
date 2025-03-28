@@ -189,6 +189,22 @@ class TestAESFunctions(unittest.TestCase):
 
             self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} invert_mixColumns mismatch between C and Python")
 
+    def test_expand_key_equivalend(self):
+        for _ in range(3):
+            key = random_block()
+
+            # Python AES class init
+
+            test_aes = AES(key)
+            
+            # C function
+            key_array = to_c_block(key)
+            result_ptr = lib.expand_key(key_array)
+            c_expanded_key_bytes = bytes(result_ptr[i] for i in range(176))
+
+            c_result = [[list(c_expanded_key_bytes[i + j:i + j + 4]) for j in range(0, 16, 4)] for i in range(0, 176, 16) ]
+
+            self.assertEqual(test_aes._key_matrices, c_result, f"key : {key} -> c_result : {c_result} -> py_result : {test_aes._key_matrices} key_matrices mismatch between C and Python")
 
 
 if __name__ == '__main__':
