@@ -151,6 +151,45 @@ class TestAESFunctions(unittest.TestCase):
 
             self.assertEqual(py_result, c_result, f"original : {origin}, key : {key_matrix} -> c_result : {c_result_matrix} -> py_result : {py_result} add_round_key mismatch between C and Python")
 
+
+    def test_invert_mix_columns_equivalent(self):
+        for _ in range(3):
+            block = random_block()
             
+            origin = bytes2matrix(block)
+            # Python function
+            matrix = bytes2matrix(block)
+            mix_columns(matrix)
+            py_result = matrix2bytes(matrix)
+
+            # C function
+            c_block = to_c_block(block)
+            lib.mix_coluimns(c_block)
+            c_result = bytes(c_block)
+            c_result_matrix = bytes2matrix(c_result)
+
+            self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} mixColumn mismatch between C and Python")
+
+
+    def test_mix_columns_equivalent(self):
+        for _ in range(3):
+            block = random_block()
+            
+            origin = bytes2matrix(block)
+            # Python function
+            matrix = bytes2matrix(block)
+            inv_mix_columns(matrix)
+            py_result = matrix2bytes(matrix)
+
+            # C function
+            c_block = to_c_block(block)
+            lib.invert_mix_columns(c_block)
+            c_result = bytes(c_block)
+            c_result_matrix = bytes2matrix(c_result)
+
+            self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} invert_mixColumns mismatch between C and Python")
+
+
+
 if __name__ == '__main__':
     unittest.main()
