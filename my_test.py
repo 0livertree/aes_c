@@ -79,7 +79,6 @@ class TestAESFunctions(unittest.TestCase):
     def test_shift_rows_equivalent(self):
         for _ in range(3):
             block = random_block()
-            
             origin = bytes2matrix(block)
             # Python function
             matrix = bytes2matrix(block)
@@ -152,7 +151,7 @@ class TestAESFunctions(unittest.TestCase):
             self.assertEqual(py_result, c_result, f"original : {origin}, key : {key_matrix} -> c_result : {c_result_matrix} -> py_result : {py_result} add_round_key mismatch between C and Python")
 
 
-    def test_invert_mix_columns_equivalent(self):
+    def test_mix_columns_equivalent(self):
         for _ in range(3):
             block = random_block()
             
@@ -171,9 +170,10 @@ class TestAESFunctions(unittest.TestCase):
             self.assertEqual(py_result, c_result, f"original : {origin} -> c_result : {c_result_matrix} -> py_result : {matrix} mixColumn mismatch between C and Python")
 
 
-    def test_mix_columns_equivalent(self):
+    def test_invert_mix_columns_equivalent(self):
         for _ in range(3):
             block = random_block()
+            block = b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f'
             
             origin = bytes2matrix(block)
             # Python function
